@@ -1,0 +1,58 @@
+@page "/"
+
+<h3>InventoryHub Products</h3>
+
+@if (products == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Stock</th>
+                <th>Category</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in products)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.Name</td>
+                    <td>@item.Price</td>
+                    <td>@item.Stock</td>
+                    <td>@item.Category?.Name</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<Product>? products;
+
+    protected override async Task OnInitializedAsync()
+    {
+        products = await Http.GetFromJsonAsync<List<Product>>("/api/productlist");
+    }
+
+    public class Product
+    {
+        public int Id { get; set; }
+        public string? Name { get; set; }
+        public double Price { get; set; }
+        public int Stock { get; set; }
+        public Category? Category { get; set; }
+    }
+
+    public class Category
+    {
+        public int Id { get; set; }
+        public string? Name { get; set; }
+    }
+}
